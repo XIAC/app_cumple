@@ -11,7 +11,6 @@ export default function Auth() {
     <>
         <View style = {estilo.vista}>
             <Image style={estilo.logo} source= {require('../assets/torta.png')}></Image>
-            {/* <Text style={{color:'#fff'}}> Tienes que registrarte o logguearte</Text> */}
             {isLogin ? <LoginForm cambiosForm={cambiosForm}/> : <RegistroForm cambiosForm={cambiosForm}/>}
         </View>
     </>
