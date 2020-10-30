@@ -1,11 +1,11 @@
 import React, {useState, useEffect}from 'react';
-import {StyleSheet, Text , View} from 'react-native';
+import {Button, StyleSheet, Text , View} from 'react-native';
 import firebase from './src/utils/firebase';
 import Auth from './src/componentes/Auth';
+import ListaCumpleanero from './src/componentes/ListaCumpleaneros';
 import 'firebase/auth';
 export default function App() {
   const [usuario, setUsuario] = useState(false);
-  console.log("test app");
   useEffect(() => {
       firebase.auth().onAuthStateChanged(response =>{
         console.log("usuario loggueado", response);
@@ -15,8 +15,7 @@ export default function App() {
   return (
     <>
       <View style = {estilo.fondo}>
-        {/* <Text style={{color:'#fff'}}> App Cumpleanhero</Text> */}
-        { usuario ? <Text style={{color:'#fff'}}> Estas loggueado</Text> :  <Auth/> }
+        { usuario ? <ListaCumpleanero/> :  <Auth/> }
       </View>
     </>
   );
