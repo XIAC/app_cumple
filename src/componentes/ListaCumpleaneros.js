@@ -1,18 +1,29 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React,{ useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
 import SeccionBotones from './SeccionBotones';
 import MostrarLista from './MostrarLista';
+import NuevoCumpleaniero from './NuevoCumpleaniero';
 export default function ListaCumpleanero() {
+  const [mostrarLista, setMostrarLista] = useState(true);
   return (
-    <View>
-      <Text>Brian Cardenas</Text>
-      <Text>Amilcar </Text>
-      <Text>Ariel</Text>
-      <Text>Eber</Text>
-      <Text>Erick</Text>
-      <Text>Maeba</Text>
-        <MostrarLista/>
-      <SeccionBotones/>
+    <View style={estilo.contenedor}>
+      { mostrarLista ? (
+          <>
+            <Text>Amilcar </Text>
+            <Text>Ariel</Text>
+          </>
+        )
+        : (<NuevoCumpleaniero/>)
+      }
+      <SeccionBotones 
+        mostrarLista ={mostrarLista} 
+        setMostrarLista={setMostrarLista}/>
      </View>
   );
 }
+const estilo = StyleSheet.create({
+  contenedor:{
+    alignItems: "center",
+    height:"100%"
+  }
+})
