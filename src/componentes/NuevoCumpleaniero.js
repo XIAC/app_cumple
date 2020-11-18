@@ -2,14 +2,20 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import firebase  from '../utils/firebase';
+import "firebase/firestore";
+// para dispositivo android
+firebase.firestore().settings({experimentalForceLongPolling: true});
+// para iniciar la base de datos
+const db = firebase.firestore();
 export default function NuevoCumpleaniero() {
     const [formDato, setFormDato] = useState({});
+    const [formError, setFormError] = useState({});
     const [ esVisible, setEsVisible] = useState(false);
     const ocultaDatePicker = () =>{
         setEsVisible(false);
     }
     const confirmar = (fecha) =>{
-        // console.log(moment(fecha).format("LL"));
         const fechaCump = fecha;
         fechaCump.setHours(0);
         fechaCump.setMinutes(0);
@@ -24,24 +30,43 @@ export default function NuevoCumpleaniero() {
         setFormDato({...formDato, [tipo]: e.nativeEvent.text});
     }
     const guardar = () =>{
-        console.log("Guardado",formDato );
+        let error ={};
+        if(!formDato.nombre  || !formDato.apellido  || !formDato.fechaCump){
+            if(!formDato.nombre ) error.nombre = true;
+            if(!formDato.apellido) error.apellido = true;
+            if(!formDato.fechaCump) error.fechaCump = true;
+        }else{
+            console.log("Guardado");
+            const informacion= formDato;
+            informacion.fechaCump.setYear(0);
+            console.log(informacion);
+            db.collection("cumple")
+              .add(informacion)
+              .then(() => {
+                  console.log("Guardo con exito!!! ");
+              })
+              .catch((error) => {
+                    console.log("Error!!!", error);
+              })
+        }
+        setFormError(error);
     }
   return (
       <>
         <View style={estilo.contenido}>
             <TextInput 
-                style={estilo.input}
+                style={[estilo.input, formError.nombre && {borderColor:'#f05545'}]}
                 placeholder="Nombres"
                 placeholderTextColor="#969696"
                 onChange = {((e) => metodoCapturar(e, "nombre"))}
                 />
             <TextInput 
-                style={estilo.input}
+                style={[estilo.input, formError.apellido && {borderColor:'#f05545'}]}
                 placeholder="Apellidos"
                 placeholderTextColor="#969696"
                 onChange = {((e) => metodoCapturar(e, "apellido"))}
                 />
-            <View style={[estilo.input, estilo.datePicker]}>
+            <View style={[estilo.input, estilo.datePicker, formError.fechaCump && {borderColor:'#f05545'}]}>
                 <Text 
                     style={{color: formDato.fechaCump ? "#fff" : "#969696"}} 
                     onPress={mostrarDatePicker}>
